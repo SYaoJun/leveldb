@@ -43,6 +43,7 @@ struct LEVELDB_EXPORT Range {
 // A DB is a persistent ordered map from keys to values.
 // A DB is safe for concurrent access from multiple threads without
 // any external synchronization.
+// 如何做到多线程安全的？
 class LEVELDB_EXPORT DB {
  public:
   // Open the database with the specified "name".
@@ -50,11 +51,14 @@ class LEVELDB_EXPORT DB {
   // OK on success.
   // Stores nullptr in *dbptr and returns a non-OK status on error.
   // Caller should delete *dbptr when it is no longer needed.
+
+  // 这里可能发生内存泄漏，如何使用内存检测工具asan和perf
   static Status Open(const Options& options, const std::string& name,
                      DB** dbptr);
 
   DB() = default;
 
+  // 主动把拷贝复制，拷贝构造禁止了，为啥？为了防止指针重复释放
   DB(const DB&) = delete;
   DB& operator=(const DB&) = delete;
 
@@ -63,6 +67,7 @@ class LEVELDB_EXPORT DB {
   // Set the database entry for "key" to "value".  Returns OK on success,
   // and a non-OK status on error.
   // Note: consider setting options.sync = true.
+  // 设置sync=true有什么作用，是强制持久化到磁盘吗？
   virtual Status Put(const WriteOptions& options, const Slice& key,
                      const Slice& value) = 0;
 

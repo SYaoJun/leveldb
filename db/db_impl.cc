@@ -1229,6 +1229,7 @@ Status DBImpl::Write(const WriteOptions& options, WriteBatch* updates) {
       mutex_.Unlock();
       status = log_->AddRecord(WriteBatchInternal::Contents(write_batch));
       bool sync_error = false;
+      // 如果sync是true的话，可以强制刷盘
       if (status.ok() && options.sync) {
         status = logfile_->Sync();
         if (!status.ok()) {

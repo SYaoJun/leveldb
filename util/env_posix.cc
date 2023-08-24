@@ -318,7 +318,7 @@ class PosixWritableFile final : public WritableFile {
     if (!status.ok()) {
       return status;
     }
-
+    // 内部调用了fsync
     return SyncFd(fd_, filename_);
   }
 
