@@ -228,6 +228,8 @@ class SpecialEnv : public EnvWrapper {
   }
 };
 
+// 为什么要继承testing::Test，这样写有什么好处？
+
 class DBTest : public testing::Test {
  public:
   std::string dbname_;
@@ -540,6 +542,7 @@ class DBTest : public testing::Test {
 };
 
 TEST_F(DBTest, Empty) {
+  // 调用了DBTest的构造函数，db_是不为空的
   do {
     ASSERT_TRUE(db_ != nullptr);
     ASSERT_EQ("NOT_FOUND", Get("foo"));
